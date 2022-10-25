@@ -1,12 +1,15 @@
 import { collection, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
+import { fileUpload } from "../../helpers/fileUpload";
 import { loadNotes } from "../../helpers/loadNotes";
 import {
   addNewEmptyNote,
   savingNewNote,
   setActiveNote,
   setNotes,
+  setPhotosToActiveNote,
   setSaving,
+  updateNote,
 } from "./journalSlice";
 
 export const startNewNote = () => {
@@ -35,5 +38,39 @@ export const startLoadingNotes = () => {
     const notes = await loadNotes(uid);
 
     dispatch(setNotes(notes));
+  };
+};
+
+export const startSaveNote = () => {
+  return async (dispatch, getState) => {
+    dispatch(setSaving());
+
+    const { uid } = getState().auth;
+    const { active: note } = getState().journal;
+
+    const noteToFireStore = { ...note };
+    delete noteToFireStore.id;
+    console.log(noteToFireStore);
+
+    const docRef = doc(FirebaseDB, `${uid}/journal/notes/${note.id}`);
+    await setDoc(docRef, noteToFireStore, { merge: true });
+
+    dispatch(updateNote(note));
+  };
+};
+
+export const startUploadingFiles = (files = []) => {
+  return async (dispatch) => {
+    dispatch(setSaving());
+
+    const fileUploadPromises = [];
+    for (let file of files) {
+      // No estoy disparando las promesas, o sea fileUpload(file).then o await fileUpload,
+      // solo las estoy guardando en el array.
+      fileUploadPromises.push(fileUpload(file));
+    }
+
+    const photosUrl = await Promise.all(fileUploadPromises);
+    dispatch(setPhotosToActiveNote(photosUrl));
   };
 };

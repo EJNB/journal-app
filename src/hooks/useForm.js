@@ -5,9 +5,13 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
   const [formValidation, setFormValidation] = useState({});
 
   // Each formState changes it'll be build the validation object again
-  useEffect(() => createValidators(), [formState]);
+  useEffect(() => {
+    createValidators();
+  }, [formState]);
 
-  useEffect(() => setFormState(initialForm), [initialForm]);
+  useEffect(() => {
+    setFormState(initialForm);
+  }, [initialForm]);
 
   const isFormValid = useMemo(() => {
     for (const formValue of Object.keys(formValidation)) {
