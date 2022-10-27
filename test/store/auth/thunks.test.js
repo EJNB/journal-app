@@ -1,4 +1,8 @@
-import { signInWithGoogle } from "../../../src/firebase/providers";
+import {
+  loginWithEmailAndPassword,
+  logoutFirebase,
+  signInWithGoogle,
+} from "../../../src/firebase/providers";
 import {
   checkingCredentials,
   login,
@@ -7,7 +11,10 @@ import {
 import {
   checkingAuth,
   startGoogleSignIn,
+  startLoginWithEmailAndPassword,
+  startLogout,
 } from "../../../src/store/auth/thunks";
+import { clearNotesLogout } from "../../../src/store/journal/journalSlice";
 import { demoUser } from "../../fixtures/authFixtures";
 
 // Aca se esta haciendo un mock a todas las exportaciones de este archivo
@@ -49,7 +56,26 @@ describe("Pruebas de Auth Thunks", () => {
     // seran devueltos los valores mockeados en loginData
     await startGoogleSignIn()(dispatch);
 
-    // expect(dispatch).toHaveBeenCalledWith(checkingCredentials());
+    expect(dispatch).toHaveBeenCalledWith(checkingCredentials());
     expect(dispatch).toHaveBeenCalledWith(logout(loginData.errorMessage));
+  });
+
+  test("startLoginWithEmailAndPassword debe de llamar checkingCredentials y login Exito", async () => {
+    const loginData = { ok: true, ...demoUser };
+    const formData = { email: demoUser.email, password: "123456" };
+
+    await loginWithEmailAndPassword.mockResolvedValue(loginData);
+    await startLoginWithEmailAndPassword(formData)(dispatch);
+
+    expect(dispatch).toHaveBeenCalledWith(checkingCredentials());
+    expect(dispatch).toHaveBeenCalledWith(login(loginData));
+  });
+
+  test("startLogout debe llamar al logoutFirebase, clearNotes y logout", async () => {
+    await startLogout()(dispatch);
+
+    expect(logoutFirebase).toHaveBeenCalled();
+    expect(dispatch).toHaveBeenCalledWith(clearNotesLogout());
+    expect(dispatch).toHaveBeenCalledWith(logout());
   });
 });
