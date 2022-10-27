@@ -10,27 +10,27 @@ cloudinary.config({
 });
 
 describe("Pruebas en fileUpload", () => {
-  test("debe de subir el archivo correctamente a claudinary", async () => {
-    const imageUrl =
-      "https://akm-img-a-in.tosshub.com/indiatoday/images/story/201810/stockvault-person-studying-and-learning---knowledge-concept178241_0.jpeg";
+  // test("debe de subir el archivo correctamente a claudinary", async () => {
+  //   const imageUrl =
+  //     "https://akm-img-a-in.tosshub.com/indiatoday/images/story/201810/stockvault-person-studying-and-learning---knowledge-concept178241_0.jpeg";
 
-    const resp = await fetch(imageUrl);
+  //   const resp = await fetch(imageUrl);
 
-    const blob = await resp.blob();
-    const file = new File([blob], "foto.jpg");
-    const url = await fileUpload(file);
+  //   const blob = await resp.blob();
+  //   const file = new File([blob], "foto.jpg");
+  //   const url = await fileUpload(file);
 
-    waitFor(() => expect(typeof url).toBe("string"), { timeout: 20000 });
-    const segments = url.split("/");
-    const imageId = segments[segments.length - 1].replace(".jpg", "");
+  //   waitFor(() => expect(typeof url).toBe("string"), { timeout: 20000 });
+  //   const segments = url.split("/");
+  //   const imageId = segments[segments.length - 1].replace(".jpg", "");
 
-    await cloudinary.api.delete_resources([
-      "journal/" + imageId,
-      {
-        resource_type: "image",
-      },
-    ]);
-  });
+  //   await cloudinary.api.delete_resources([
+  //     "journal/" + imageId,
+  //     {
+  //       resource_type: "image",
+  //     },
+  //   ]);
+  // });
 
   test("debe retornar null", async () => {
     const file = new File([], "foto.jpg");
