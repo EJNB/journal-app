@@ -1,7 +1,6 @@
-import { async } from "@firebase/util";
-
 export const fileUpload = async (file) => {
-  if (!file) throw new Error("No tenemos ningun archivo");
+  // if (!file) throw new Error("No tenemos ningun archivo");
+  if (!file) return null;
 
   const url = "https://api.cloudinary.com/v1_1/dl1ik04nq/upload";
   const formData = new FormData();
@@ -19,6 +18,7 @@ export const fileUpload = async (file) => {
     const cloudRes = await resp.json();
     return cloudRes.secure_url;
   } catch (error) {
-    throw new Error(error.message);
+    // throw new Error(error.message);
+    return null;
   }
 };
