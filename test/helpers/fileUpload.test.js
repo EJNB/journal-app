@@ -1,5 +1,5 @@
 import { waitFor } from "@testing-library/react";
-import { fileUpload } from "../../src/helpers/fileUpload";
+import { fileUpload } from "../../src/helpers";
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
